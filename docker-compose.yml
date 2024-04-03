@@ -1,0 +1,19 @@
+version: '3.8'  # Specify the Docker Compose version
+
+services:
+  ai_api:
+    build: ./ai_api
+    ports:
+      - "8888:8888"
+  project_api:
+    build: ./project_api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ai_api
+  nextjs-client:
+    build: ./project_client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - project_api
