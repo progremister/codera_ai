@@ -7,8 +7,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  jdk-setup:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2019, macOS-latest]
+        
     steps:
       - uses: actions/checkout@v3
 
@@ -25,15 +29,31 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-m2-
+            
+  build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-2019, macOS-latest]
 
-      - name: Build with Maven
-        run: mvn package -DskipTests
+        steps:
+          - name: Build with Maven
+            working-directory: project_api
+            run: mvn package -DskipTests
 
-      - name: Run tests (optional)
-        run: mvn test
+  test:
+        runs-on: ${{ matrix.os }}
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-2019, macOS-latest]
 
-      - name: Upload test results (optional)
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: target/surefire-reports
+        steps: 
+        - name: Run tests (optional)
+          working-directory: project_api
+          run: mvn test
+  
+        - name: Upload test results (optional)
+          uses: actions/upload-artifact@v3
+          with:
+            name: test-results
+            path: target/surefire-reports
