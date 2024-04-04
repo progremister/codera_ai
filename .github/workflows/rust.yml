@@ -7,29 +7,71 @@ on:
 env:
   CARGO_TERM_COLOR: always
 jobs:
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - working-directory: ai_api
+        run: rustup component add rustfmt
+        
+      - working-directory: ai_api
+        run: make format
+      
   build:
+      name: Build
+      runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [ubuntu-latest, windows-2019, macOS-latest]
+          rust: [stable, nightly]
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: ${{ matrix.rust }}
+            override: true
+        - working-directory: ai_api
+          run: cargo build
+            
+  test:
+    name: Test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2019, macOS-latest],
-        rust: [stable, lightly]
+        os: [ubuntu-latest, macOS-latest]
+        rust: [stable, nightly]
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions-rs/toolchain@v1
-      with:
-          toolchain: ${{ matrix.rust }}
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
           profile: minimal
-          components: clippy, rustfmt
+          toolchain: ${{ matrix.rust }}
           override: true
-    - name: Update linux
-      run: sudo apt update 
-    - name: Update Rust
-      run: make install
-    - name: Check Rust versions
-      run: make rust-version
-    - name: Format
-      run: make format
-    - name: Lint
-      run: make lint
-    - name: Test
-      run: make test
+      - working-directory: ai_api
+        run: make test
+  
+  
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+        
+      - working-directory: ai_api
+        run: rustup component add clippy
+        
+      - working-directory: ai_api
+        run: make lint
