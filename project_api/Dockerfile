@@ -1,4 +1,4 @@
-FROM openjdk:17-slim
+FROM openjdk:21-slim
 
 WORKDIR /app
 
@@ -6,6 +6,6 @@ COPY pom.xml ./
 
 COPY . .
 
-RUN mvn package -DskipTests  # Build the project using Maven (adjust for Gradle)
+RUN mvn package
 
 EXPOSE 5432
