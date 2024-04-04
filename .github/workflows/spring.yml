@@ -36,24 +36,24 @@ jobs:
         strategy:
           matrix:
             os: [ubuntu-latest, windows-2019, macOS-latest]
-
         steps:
           - uses: actions/checkout@v3
           
           - name: Build with Maven
             working-directory: project_api
-            run: mvn package -DskipTests
+            run: mvn clean verify
 
   test:
         runs-on: ${{ matrix.os }}
         strategy:
           matrix:
             os: [ubuntu-latest, windows-2019, macOS-latest]
+        needs: build
 
         steps: 
         - uses: actions/checkout@v3
         
-        - name: Run tests (optional)
+        - name: Run tests
           working-directory: project_api
           run: mvn test
   
