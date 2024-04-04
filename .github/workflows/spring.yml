@@ -20,7 +20,8 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          cache: 'maven'
+          cache: maven
+          distribution: 'temurin'
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -37,6 +38,8 @@ jobs:
             os: [ubuntu-latest, windows-2019, macOS-latest]
 
         steps:
+          - uses: actions/checkout@v3
+          
           - name: Build with Maven
             working-directory: project_api
             run: mvn package -DskipTests
@@ -48,6 +51,8 @@ jobs:
             os: [ubuntu-latest, windows-2019, macOS-latest]
 
         steps: 
+        - uses: actions/checkout@v3
+        
         - name: Run tests (optional)
           working-directory: project_api
           run: mvn test
