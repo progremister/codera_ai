@@ -18,8 +18,11 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: rustup component add rustfmt
-      - run: make format
+      - working-directory: ai_api
+        run: rustup component add rustfmt
+        
+      - working-directory: ai_api
+        run: make format
       
   build:
       name: Build
@@ -37,6 +40,7 @@ jobs:
             override: true
         - uses: actions-rs/cargo@v1
           with:
+            path: ai_api
             command: build
             
   test:
@@ -53,7 +57,8 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.rust }}
           override: true
-      - run: make test
+      - working-directory: ai_api
+        run: make test
   
   
   clippy:
@@ -66,5 +71,9 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: rustup component add clippy
-      - run: make lint
+        
+      - working-directory: ai_api
+        run: rustup component add clippy
+        
+      - working-directory: ai_api
+        run: make lint
