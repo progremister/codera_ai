@@ -18,14 +18,14 @@ jobs:
         with:
           node-version: 16
 
-      - name: Change directory to project_client
-        run: cd project_client
-        
       - name: Install dependencies
+        working-directory: project_client
         run: npm install
 
       - name: Run tests
+        working-directory: project_client
         run: npm test
 
       - name: Build Next.js application
+        working-directory: project_client
         run: npm run build
