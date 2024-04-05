@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  jdk-setup:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -15,33 +15,16 @@ jobs:
         
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
-            
-  build:
-        runs-on: ${{ matrix.os }}
-        strategy:
-          matrix:
-            os: [ubuntu-latest, windows-2019, macOS-latest]
-        steps:
-          - uses: actions/checkout@v4
-          
-          - name: Build with Maven
-            working-directory: project_api
-            run: mvn --batch-mode --update-snapshots verify
+      - name: Build with Maven
+        working-directory: project_api
+        run: mvn -B package --file pom.xml
 
   test:
         runs-on: ${{ matrix.os }}
@@ -53,6 +36,12 @@ jobs:
         steps: 
         - uses: actions/checkout@v3
         
+        - name: Set up JDK 17
+          uses: actions/setup-java@v3
+          with:
+            java-version: '17'
+            distribution: 'temurin'
+            cache: maven
         - name: Run tests
           working-directory: project_api
           run: mvn test
