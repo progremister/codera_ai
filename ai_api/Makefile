@@ -8,6 +8,12 @@ test:
 	cargo test --quiet
 
 build:
+<<<<<<< HEAD
+=======
+	cargo build
+
+builddocker:
+>>>>>>> origin/main
 	docker build -t hk_ai_api .
 
 rundocker:
@@ -16,4 +22,8 @@ rundocker:
 run:
 	cargo run 
 
+<<<<<<< HEAD
 all: format lint test run
+=======
+all: format lint build test run
+>>>>>>> origin/main
