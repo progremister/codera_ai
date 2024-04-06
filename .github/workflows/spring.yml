@@ -1,0 +1,64 @@
+name: Spring Boot CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  jdk-setup:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2019, macOS-latest]
+        
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          cache: maven
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+            
+  build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-2019, macOS-latest]
+        steps:
+          - uses: actions/checkout@v3
+          
+          - name: Build with Maven
+            working-directory: project_api
+            run: mvn clean verify
+
+  test:
+        runs-on: ${{ matrix.os }}
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-2019, macOS-latest]
+        needs: build
+
+        steps: 
+        - uses: actions/checkout@v3
+        
+        - name: Run tests
+          working-directory: project_api
+          run: mvn test
+  
+        - name: Upload test results (optional)
+          uses: actions/upload-artifact@v3
+          with:
+            name: test-results
+            path: target/surefire-reports

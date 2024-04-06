@@ -1,0 +1,77 @@
+name: Rust API CI/CD Pipeline
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - working-directory: ai_api
+        run: rustup component add rustfmt
+        
+      - working-directory: ai_api
+        run: make format
+      
+  build:
+      name: Build
+      runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          os: [ubuntu-latest, windows-2019, macOS-latest]
+          rust: [stable, nightly]
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: ${{ matrix.rust }}
+            override: true
+        - working-directory: ai_api
+          run: cargo build
+            
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        rust: [stable, nightly]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - working-directory: ai_api
+        run: make test
+  
+  
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+        
+      - working-directory: ai_api
+        run: rustup component add clippy
+        
+      - working-directory: ai_api
+        run: make lint
