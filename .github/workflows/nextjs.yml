@@ -19,7 +19,6 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: project_client
         run: npm install
 
       # - name: Run tests
@@ -27,5 +26,4 @@ jobs:
       #   run: npm test
 
       - name: Build Next.js application
-        working-directory: project_client
         run: npm run build
