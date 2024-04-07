@@ -39,7 +39,6 @@ export default function Home() {
                 content: welcomeMessage,
                 id: "initialai",
               }} isFirst={true}
-              className="mb-4"
             />
             {messages.map((message) => (
               <Bubble key={message.id} message={message} id={message.id}/>

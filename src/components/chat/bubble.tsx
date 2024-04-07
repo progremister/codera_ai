@@ -113,14 +113,7 @@ export default function Bubble({
             </div>
             
             {!loading && (<div className="relative">
-              <ReactMarkdown components={{
-                // Custom component for rendering tool icons
-                tool_called: ({ children }) => {
-                  const [toolName, successString] = children.split("$$");
-                  const success = successString === "true";
-                  return renderToolContent(toolName, success);
-                },
-              }} className="pb-6">
+              <ReactMarkdown className="pb-6">
                 {/* Remove unnecessary escapes and potential injection risks */}
                 {message.content
                   .replaceAll(`<|tool_error|>`, "")

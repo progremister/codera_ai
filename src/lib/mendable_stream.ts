@@ -1,6 +1,6 @@
-import { AIStream, AIStreamCallbacks } from "ai";
+import { AIStream } from "ai";
 
-export interface MendableStreamCallbacks extends AIStreamCallbacks {
+export interface MendableStreamCallbacks {
   onMessage?: (data: string) => Promise<void>;
 }
 
@@ -39,5 +39,5 @@ export async function MendableStream(
     throw new Error("Response error: " + (await response.text()));
   }
 
-  return AIStream(response, parseMendableStream(), callbacks);
+  return AIStream(response, parseMendableStream());
 }
