@@ -1,7 +1,12 @@
-# Codera 🚀
+# Codera AI 🚀
 ## Introduction 📜
 
 This project aims to modernize legacy codebases by transforming them into modern, efficient, and maintainable code. Through an AI-driven analysis and transformation process, legacy systems can be upgraded to meet current standards and technologies.
+
+**Product demo: https://codera-ai.vercel.app/chat**
+
+**Google Colab AI Prototype: https://colab.research.google.com/drive/1XaA3BmUssSqr9G4l3EeKW05fx0eOYf8V?usp=sharing**
+
 
 ## Implementation Plan 🛠️
 
